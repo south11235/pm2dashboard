@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <title>PM2-Dashboard</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/public/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/public/css/pm2p-dashboard.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
+    <header class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <span class="navbar-brand"><span class="icon-globe disconnected" title="socket disconnected"></span> PM2-Dashboard</span>
+        </div>
+        <div class="collapse navbar-collapse"></div>
+      </div>
+    </header>
+    <section class="container" style="padding-top: 30px;">
+      <ul id="tabList" class="tabs" style="margin: 5px 0 5px -40px;"></ul>
+      <section id="systems">
+        <div class="panel panel-default" id="host-newHost">
+          <div class="container">
+            <section>
+              <div class="row">
+                <div class="col-lg-3">
+                  <div class="panel-body">
+                    <form id="newHost">
+                      <h3>Add PM2 Host</h3>
+                      <div class="form-group">
+                        <label class="control-label" for="name">Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="serverA"/>
+
+                        <label class="control-label" for="hostname">URL</label>
+                        <input type="text" class="form-control" name="url" placeholder="http://localhost"/>
+
+                        <label class="control-label" for="port">Port</label>
+                        <input type="text" class="form-control" name="port" placeholder="9615"/>
+                      </div>
+                      <button type="submit" class="btn btn-primary" id="newHostSubmit" style="margin-top: 10px">Submit</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </section>
+
+    <script src="/public/js/socket.io.min.js"></script>
+    <script src="/public/js/underscore-min.js"></script>
+    <script src="/public/js/backbone-min.js"></script>
+    <script src="/public/js/jquery-2.0.3.min.js"></script>
+    <script src="/public/js/bootstrap.min.js"></script>
+    <script src="/public/js/handlebars.js"></script>
+    <script src="/public/js/moment.min.js"></script>
+    <script src="/public/js/noty/jquery.noty.js"></script>
+    <script src="/public/js/noty/top.js"></script>
+    <script src="/public/js/noty/default.js"></script>
+
+    <script src="/public/js/pm2p/client.js"></script>
+    <script src="/public/js/pm2p/events.js"></script>
+
+
+    <!-- ************ Templates ************ -->
+    <script id="renderTabList" type="text/x-handlebars-template">
+      <li><a href="#host-{{hostname}}" class="tabSelect">{{id}}</a> <a><span data-remove="{{id}}" class="icon-remove-sign" style="cursor: pointer"></span></a></li>
+    </script>
+
+    <script id="renderNewServer" type="text/x-handlebars-template">
+      <li><a href="#host-newHost" class="tabSelect">+</a></li>
+    </script>
+
+    <script id="processListItem" type="text/x-handlebars-template">
+      <tr>
+        <td><span class="pidstatus {{status_text}} icon-font"></span></td>
+        <td>{{opts.name}}</td>
+        <td>{{mem_text}}</td>
+        <td>
+          <div class="progress progress-striped">
+            <div title="{{monit.cpu}}%" class="progress-bar" style="width: {{monit.cpu}}%;"></div>
+          </div>
+        </td>
+        <td>{{started}}</td>
+        <td>{{opts.unstable_restarts}}</td>
+        <td>{{pid}}</td>
+      </tr>
+    </script>
+
+    <script id="memoryInfoItem" type="text/x-handlebars-template">
+      <div class="free">{{monit.free_mem_text}}</div>
+      <div class="progress progress-striped">
+        <div class="progress-bar" style="width: {{monit.used_percentage}}%;"></div>
+      </div>
+      <div class="total">{{monit.total_mem_text}}</div>
+    </script>
+
+    <script id="hostLoadItem" type="text/x-handlebars-template">
+      {{#each monit.loadavg}}
+        <li>{{.}}</li>
+      {{/each}}
+    </script>
+
+    <script id="hostInfoItem" type="text/x-handlebars-template">
+      <p>host: {{system_info.hostname}}</p>
+      <p>started: {{system_info.uptime_text}}</p>
+    </script>
+
+    <script id="renderSystemStats" type="text/x-handlebars-template">
+      <div class="panel panel-default" id="host-{{system_info.id}}">
+        <div class="container">
+          <section>
+            <div class="row">
+              <div class="col-lg-9">
+                <section>
+                <table class="table table-striped table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>status</th>
+                      <th>process</th>
+                      <th>memory</th>
+                      <th>CPU</th>
+                      <th>started</th>
+                      <th>restarts</th>
+                      <th>pid</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </section>
+              </div>
+              <div class="col-lg-3">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">memory</h3>
+                  </div>
+                  <div class="panel-content meminfo" style="padding: 10px"></div>
+                </div>
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">load</h3>
+                  </div>
+                  <div class="panel-body">
+                    <ul class="loadavg"></ul>
+                  </div>
+                </div>
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Host Details</h3>
+                  </div>
+                  <div class="panel-body hostInfo"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </script>
+  </body>
+</html>

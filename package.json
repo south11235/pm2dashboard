@@ -1,0 +1,29 @@
+{
+  "name": "pm2dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node pm2dashboard.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "3.4.0",
+    "request": "~2.27.0",
+    "underscore": "~1.5.2",
+    "socket.io": "~0.9.16",
+    "q": "~0.9.7",
+    "node-persist": "0.0.1",
+    "argparse": "~0.1.15"
+  },
+  "keywords": [
+    "pm2",
+    "ui",
+    "monitoring",
+    "tools",
+    "sysadmin"
+  ],
+  "repository":{
+    "type" : "git",
+    "url" : "git://github.com/south11235/pm2dashboard"
+  }
+}

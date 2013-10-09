@@ -1,0 +1,72 @@
+/* http://bootswatch.com/spacelab/ */
+body {
+  padding: 30px 10px 10px 10px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#systems .panel-default { padding: 10px;}
+.pidstatus.online:before {
+	content: "\f14a";
+}
+.pidstatus.online {
+	color: green;
+}
+.pidstatus.error:before {
+	content: "\f06a";
+}
+.pidstatus.error {
+	color: red;
+}
+
+.icon-globe.disconnected {
+	color: red;
+}
+
+#tabList a {
+	text-decoration: none;
+}
+
+#systems .panel.panel-default {
+	border-radius: 0 4px 4px 4px;
+}
+
+#systems table .progress {
+	margin-bottom: 0px;
+}
+
+#tabList li {
+	background-color: #ddd;
+	border: 1px solid #ddd;
+	border-radius: 5px 5px 0 0;
+	display: inline; 
+	padding: 5px; 
+}
+#tabList li.active {
+	background-color: white;
+	position: relative;
+	top: 1px;
+	border-bottom: none;
+}
+#tabList li a {
+	color: slategray;
+}
+#tabList li.active a {
+	color: #3399f3;
+}
+.panel-primary .panel-heading h3 {
+	color: white;
+}
+.meminfo .progress {
+	float:left;
+	margin-right: 5px;
+	width: 35%;
+}
+
+.meminfo .free {
+	float:left;
+	margin-right: 5px;
+}
