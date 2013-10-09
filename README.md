@@ -3,7 +3,7 @@ Simple Web UI Status for PM2 Instances.
 # Installation
 ````bash
 $ git clone https://github.com/south11235/pm2dashboard.git
-$ cd pm2panel
+$ cd pm2dashboard
 $ npm install
 $ pm2 start pm2dashboard.js -- --port 4000
 ````
