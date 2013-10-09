@@ -12,7 +12,7 @@ var storage = require('node-persist');
 var routes = require('./lib/server/routes');
 
 var parser = new ArgumentParser({
-  version: '0.0.1',
+  version: '0.1.0',
   addHelp:true,
   description: 'PM2 UI Panel'
 });
