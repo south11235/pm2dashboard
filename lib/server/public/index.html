@@ -76,7 +76,7 @@
     <script id="processListItem" type="text/x-handlebars-template">
       <tr>
         <td><span class="pidstatus {{status_text}} icon-font"></span></td>
-        <td>{{opts.name}}</td>
+        <td>{{name}}</td>
         <td>{{mem_text}}</td>
         <td>
           <div class="progress progress-striped">
@@ -84,7 +84,7 @@
           </div>
         </td>
         <td>{{started}}</td>
-        <td>{{opts.unstable_restarts}}</td>
+        <td>{{unstable_restarts}}</td>
         <td>{{pid}}</td>
       </tr>
     </script>
